@@ -25,6 +25,8 @@ domains using HMMER.
     - asCOG.ali.tgz
     - asCOG.2020-10.def.tab
 
+make sure to convert iconv -f latin1 -t utf8 Sources/asCOGs.2020-10.def.tab.txt > Sources/asCOGs_fixed.txt
+
 ## Source
 Pfam-A (current release at build time: Jan 2026)
 
@@ -44,3 +46,7 @@ hmm_search_escrt.sh - compiles hmm for ESCRT proteins from AsCOGs alignments
 get_ascog_ids.py - returns asCOG ids for given search term for the protein
 
 
+
+## Errors encountered
+- hmmbuild: error while loading shared libraries: libopenblas.so.0: cannot open shared object file: No such file or directory
+    - conda install -c bioconda hmmer openblas -y
