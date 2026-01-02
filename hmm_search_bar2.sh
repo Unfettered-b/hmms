@@ -36,19 +36,33 @@ LOG_DIR="$OUTPUT_DIR/logs"
 # STEP 1: PREPARE HMMs
 # -----------------------------
 echo "↓ Preparing BAR superfamily HMMs..."
+# Directory for HMM sources
+SOURCES_DIR="Sources"
+mkdir -p "$SOURCES_DIR"
 
-if [ ! -f BAR_superfamily.hmm ]; then
-    wget -q https://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
-    gunzip Pfam-A.hmm.gz
+BAR_HMM="$SOURCES_DIR/BAR_superfamily.hmm"
+PFAM_HMM="$SOURCES_DIR/Pfam-A.hmm"
 
-    hmmfetch Pfam-A.hmm \
+echo "↓ Preparing BAR superfamily HMMs..."
+
+if [ ! -f "$BAR_HMM" ]; then
+    echo "Downloading Pfam-A.hmm.gz..."
+    wget -q https://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz \
+        -O "$SOURCES_DIR/Pfam-A.hmm.gz"
+
+    gunzip -f "$SOURCES_DIR/Pfam-A.hmm.gz"
+
+    echo "Extracting BAR superfamily HMMs..."
+    hmmfetch "$PFAM_HMM" \
         PF02147 PF06957 PF09104 PF03008 PF08515 PF17641 PF17642 \
-        > BAR_superfamily.hmm
+        > "$BAR_HMM"
 
-    hmmpress BAR_superfamily.hmm
-    rm Pfam-A.hmm*
+    echo "Indexing HMM (hmmpress)..."
+    hmmpress "$BAR_HMM"
 
-    echo "✓ BAR_superfamily.hmm ready"
+    rm -f "$PFAM_HMM"
+
+    echo "✓ BAR_superfamily.hmm ready (7 domains)"
 else
     echo "✓ BAR_superfamily.hmm already exists"
 fi

@@ -7,6 +7,7 @@ BAR_superfamily.hmm*
 *.h3i
 *.h3m
 *.h3p
+Sources/*
 
 # =========================
 # Pipeline outputs
