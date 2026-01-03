@@ -17,8 +17,8 @@ results/
 chunks/
 domtblout/
 logs/
-hits/
-ESCRT_results*
+
+
 # =========================
 # Python junk
 # =========================
