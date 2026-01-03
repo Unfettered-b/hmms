@@ -17,6 +17,7 @@ OUTPUT_DIR="${2:-$WORKINGDIR/ESCRT_results}"
 N_CPUS="${3:-$(nproc)}"
 EVALUE="1e-3"
 N_CHUNKS=32
+CLEAN_START="${4:-true}"  # Add option for clean start
 
 echo "ESCRT Superfamily Search"
 echo "Input FASTA : $INPUT_FASTA"
@@ -25,7 +26,25 @@ echo "CPUs        : $N_CPUS"
 echo "Chunks      : $N_CHUNKS"
 echo "E-value     : <$EVALUE"
 echo "Working Dir : $WORKINGDIR"
+echo "Clean start : $CLEAN_START"
 echo "-------------------------------------------"
+
+# -----------------------------
+# OPTIONAL: CLEAN START
+# -----------------------------
+if [ "$CLEAN_START" = "true" ] || [ "$CLEAN_START" = "yes" ] || [ "$CLEAN_START" = "1" ]; then
+    echo "🗑️  CLEANING old results..."
+    
+    if [ -d "$OUTPUT_DIR" ]; then
+        # Backup old results with timestamp
+        BACKUP_DIR="${OUTPUT_DIR}_backup_$(date +%Y%m%d_%H%M%S)"
+        echo "Moving old results to: $BACKUP_DIR"
+        mv "$OUTPUT_DIR" "$BACKUP_DIR"
+        echo "✓ Backup complete"
+    fi
+    
+    echo "✓ Starting fresh"
+fi
 
 # -----------------------------
 # SETUP DIRECTORIES
@@ -165,7 +184,7 @@ echo "✓ All hmmsearch jobs completed (Skipped: $N_SKIPPED, Ran: $N_LAUNCHED)"
 # -----------------------------
 # STEP 4: PARSE + MERGE RESULTS
 # -----------------------------
-FINAL_HITS="$OUTPUT_DIR/hits/ESCRT_hits_final.tsv"
+FINAL_HITS="$OUTPUT_DIR/hits/ESCRT_hits_final.csv"
 
 if [ ! -s "$FINAL_HITS" ]; then
     echo "📊 Parsing domtblout files..."
